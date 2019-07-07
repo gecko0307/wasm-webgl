@@ -1,30 +1,30 @@
 module main;
 
 import std.traits;
-import memory;
-import math;
-import js;
-import webgl2;
-
-enum psize = 8;
-__gshared ulong _allocatedMemory = 0;
+import wstd;
 
 extern(C):
-
-T allocate(T, A...) (A args) if (is(T == class))
-{
-    enum size = __traits(classInstanceSize, T);
-    void* p = cast(void*)malloc(size);
-    consoleLog(cast(size_t)p);
-    T c = cast(T)p;
-    return c;
-}
-
-alias New = allocate;
 
 extern(C++) class Foo
 {
     int x;
+    float y;
+    this(int v, float v2)
+    {
+        x = v;
+        y = v2;
+    }
+}
+
+struct Bar
+{
+    int x;
+    float y;
+    this(int v, float v2)
+    {
+        x = v;
+        y = v2;
+    }
 }
 
 double benchmark()
@@ -194,14 +194,17 @@ extern(C) struct Application
         projectionMatrix = orthoMatrix(0, canvasWidth, 0, canvasHeight, 0, 100);
         projectionMatrixLoc = webglGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
         
-        auto t = translationMatrix(0, 0, 0);
+        auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
         auto s = scaleMatrix(100, 100, 100);
         modelViewMatrix = multMatrix(t, s);
         modelViewMatrixLoc = webglGetUniformLocation(shaderProgram, pMat2.length, cast(ubyte*)pMat2.ptr);
         
-        Foo foo = New!Foo();
-        foo.x = 100;
-        consoleLog(foo.x);
+        Bar* b = New!Bar(100, 0.5f);
+        consoleLog(b.y);
+        
+        int[] arr = New!(int[])(20);
+        arr[1] = 5;
+        consoleLog(arr[1]);
     }
     
     void onUpdate(double dt)
@@ -242,8 +245,6 @@ int runCallback(int function() callback)
 int main(int cw, int ch)
 {
     app.create(cw, ch);
-    consoleLog(app.canvasWidth);
-    consoleLog(app.canvasHeight);
     setInterval(&loop, 1000 / app.fps);
     return 0;
 }

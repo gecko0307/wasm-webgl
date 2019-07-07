@@ -1,4 +1,4 @@
-module webgl2;
+module wstd.webgl2;
 
 extern(C):
 

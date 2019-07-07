@@ -1,4 +1,4 @@
-module math;
+module wstd.math;
 
 T abs(T)(T v)
 {

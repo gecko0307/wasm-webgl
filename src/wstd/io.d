@@ -1,4 +1,4 @@
-module js;
+module wstd.io;
 
 extern(C):
 
