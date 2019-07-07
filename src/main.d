@@ -28,14 +28,6 @@ struct Bar
     }
 }
 
-double benchmark()
-{
-    double r;
-    for (int i = 0; i < 10000000; i++)
-        r = sqrt(i);
-    return r;
-}
-
 enum VertexAttrib
 {
     Vertices = 0,
@@ -113,12 +105,15 @@ extern(C) struct Application
     
     layout (location = 0) in vec3 va_Vertex;
     
+    out vec3 position;
+    
     uniform mat4 projectionMatrix;
     uniform mat4 modelViewMatrix;
-				
+	
     void main(void)
     {
         vec4 pos = projectionMatrix * modelViewMatrix * vec4(va_Vertex, 1.0);
+        position = pos.xyz;
         gl_Position = pos;
     }
     ";
@@ -127,11 +122,13 @@ extern(C) struct Application
     "#version 300 es
     precision highp float;
     
+    in vec3 position;
+    
     out vec4 frag_color;
     
     void main(void)
     {
-        frag_color = vec4(1.0, 1.0, 1.0, 1.0);
+        frag_color = vec4(1.0, 1.0, 0.0, 1.0);
     }";
     
     uint shaderProgram;
@@ -192,7 +189,7 @@ extern(C) struct Application
         
         webglLinkProgram(shaderProgram);
         
-        projectionMatrix = orthoMatrix(0, canvasWidth, 0, canvasHeight, 0, 100);
+        projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, 0, 100);
         projectionMatrixLoc = webglGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
         
         auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);

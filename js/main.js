@@ -1,6 +1,12 @@
 var canvas = document.getElementById("canv-main");
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
 var gl = canvas.getContext("webgl2");
-gl.viewport(0, 0, canvas.width, canvas.height);
+
+console.log(canvas.clientWidth, canvas.clientHeight);
+
+gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
     
 var wasmInstance;
 var wasmMemory;
@@ -40,11 +46,10 @@ function getString(bufferOffset, bufferLen)
 
     var buf = new Uint8Array(wasmMemory.buffer, bufferOffset, bufferLen);
     var s = "";
-    for (i = 0; i < bufferLen; i++) {
+    for (var i = 0; i < bufferLen; i++) {
         s += String.fromCharCode(buf[i]);
     }
     stringCache[bufferOffset] = s;
-    //console.log("Cached " + s);
     return s;
 }
     
@@ -55,7 +60,6 @@ function getFloat32Array(bufferOffset, bufferLen)
 
     var buf = new Float32Array(wasmMemory.buffer, bufferOffset, bufferLen);
     arrayCache[bufferOffset] = buf;
-    //console.log("Cached " + buf);
     return buf;
 }
     
@@ -90,7 +94,6 @@ function webglBufferData(target, len, offset, usage)
         buf = new Uint16Array(wasmMemory.buffer, offset, len);
     else
         buf = new Float32Array(wasmMemory.buffer, offset, len);
-    //console.log(buf);
     gl.bufferData(target, buf, usage);
 }
     
@@ -179,7 +182,6 @@ function webglUniformMatrix4fv(location, transpose, offset)
     if (location != 0)
     {
         var data = getFloat32Array(offset, 16);
-        //console.log(data);
         gl.uniformMatrix4fv(locations[location - 1], transpose, data);
     }
 }
@@ -188,7 +190,7 @@ const request = new XMLHttpRequest();
 request.open('GET', 'main.wasm');
 request.responseType = 'arraybuffer';
 request.onload = () => {
-    const bytes = request.response;
+    const wasmBuffer = request.response;
         
     const importObject = 
     {
@@ -229,13 +231,12 @@ request.onload = () => {
         }
     };
     
-    WebAssembly.instantiate(bytes, importObject).then(result => 
+    WebAssembly.instantiate(wasmBuffer, importObject).then(result => 
     {        
-        //console.log('instantiated');
         wasmInstance = result.instance;
         wasmMemory = wasmInstance.exports.memory;
         const { exports } = result.instance;
-        const ret = exports.main(640, 480);
+        const ret = exports.main(canvas.clientWidth, canvas.clientHeight);
     });
 };
 

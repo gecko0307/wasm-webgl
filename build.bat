@@ -1,1 +1,0 @@
-ldc2 -mtriple=wasm32-unknown-unknown-wasm -betterC -O -release -link-internally -L-allow-undefined -Isrc --of=html/main.wasm src/main.d src/core/arrayinit.d src/core/mem.d src/web/console.d src/web/time.d src/core/math.d src/core/matrix.d src/web/gl.d
