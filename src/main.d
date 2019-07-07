@@ -206,6 +206,15 @@ extern(C) struct Application
         int[] arr = New!(int[])(20);
         arr[1] = 5;
         consoleLog(arr[1]);
+        
+        /*
+        Bar* b = New!Bar(100, 0.5f);
+        consoleLog(b.y);
+        
+        int[] arr = New!(int[])(20);
+        arr[1] = 5;
+        consoleLog(arr[1]);
+        */
     }
     
     void onUpdate(double dt)

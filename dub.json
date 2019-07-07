@@ -1,0 +1,14 @@
+{
+    "name": "main",
+    "description": "WebAssembly + WebGL with D",
+	"license": "Boost",
+	"authors": [
+		"Timur Gafarov"
+	],
+	"copyright": "Copyright (C) 2019 Timur Gafarov",
+	"dependencies": { },
+    "dflags": ["-betterC", "-mtriple=wasm32-unknown-unknown-wasm", "-link-internally", "-L-allow-undefined"],
+
+    "postBuildCommands-windows": ["move main.exe html/main.wasm"],
+    "postBuildCommands-posix": ["mv main html/main.wasm"]
+}
