@@ -47,6 +47,10 @@
       return buf;
     }
 
+    function webglViewport(x, y, w, h) {
+      gl.viewport(x, y, w, h);
+    }
+
     function webglClearColor(r, g, b, a) {
       gl.clearColor(r, g, b, a);
     }
@@ -148,6 +152,7 @@
           consoleLog: console.log,
           malloc: malloc,
           free: free,
+          webglViewport: webglViewport,
           webglClearColor: webglClearColor,
           webglClear: webglClear,
           webglCreateBuffer: webglCreateBuffer,
@@ -166,29 +171,23 @@
           webglLinkProgram: webglLinkProgram,
           webglUseProgram: webglUseProgram,
           webglGetUniformLocation: webglGetUniformLocation,
-          webglUniformMatrix4fv: webglUniformMatrix4fv,
-          setInterval: function (_setInterval) {
-            function setInterval(_x, _x2) {
-              return _setInterval.apply(this, arguments);
-            }
-
-            setInterval.toString = function () {
-              return _setInterval.toString();
-            };
-
-            return setInterval;
-          }(function (f, n) {
-            setInterval(function () {
-              wasmInstance.exports.runCallback(f);
-            }, n);
-          })
+          webglUniformMatrix4fv: webglUniformMatrix4fv
         }
       };
       WebAssembly.instantiate(wasmBuffer, importObject).then(function (result) {
         wasmInstance = result.instance;
         wasmMemory = wasmInstance.exports.memory;
         var exports = result.instance.exports;
-        var ret = exports.main(canvas.clientWidth, canvas.clientHeight);
+        var ret = exports.init(canvas.clientWidth, canvas.clientHeight);
+        setInterval(function () {
+          wasmInstance.exports.loop(1.0 / 60.0);
+        }, 1000 / 60);
+
+        window.onresize = function (event) {
+          canvas.width = canvas.clientWidth;
+          canvas.height = canvas.clientHeight;
+          wasmInstance.exports.resize(canvas.width, canvas.height);
+        };
       });
     };
 

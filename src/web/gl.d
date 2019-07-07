@@ -22,6 +22,7 @@ enum GL_FRAGMENT_SHADER = 0x8B30;
 
 public:
 
+void webglViewport(uint x, uint y, uint w, uint h);
 void webglClearColor(float r, float g, float b, float a);
 void webglClear(uint mask);
 uint webglCreateBuffer();
@@ -46,6 +47,7 @@ public:
 
 static struct gl
 {
+    alias viewport = webglViewport;
     alias clearColor = webglClearColor;
     alias clear = webglClear;
     alias createBuffer = webglCreateBuffer;

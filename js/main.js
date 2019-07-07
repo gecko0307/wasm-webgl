@@ -62,7 +62,12 @@ function getFloat32Array(bufferOffset, bufferLen)
     arrayCache[bufferOffset] = buf;
     return buf;
 }
-    
+
+function webglViewport(x, y, w, h)
+{
+    gl.viewport(x, y, w, h);
+}
+
 function webglClearColor(r, g, b, a)
 {
     gl.clearColor(r, g, b, a);
@@ -201,6 +206,7 @@ request.onload = () => {
             malloc: malloc,
             free: free,
 
+            webglViewport: webglViewport,
             webglClearColor: webglClearColor,
             webglClear: webglClear,
             webglCreateBuffer: webglCreateBuffer,
@@ -219,15 +225,7 @@ request.onload = () => {
             webglLinkProgram: webglLinkProgram,
             webglUseProgram: webglUseProgram,
             webglGetUniformLocation: webglGetUniformLocation,
-            webglUniformMatrix4fv: webglUniformMatrix4fv,
-            
-            setInterval: function(f, n)
-            {
-                setInterval(function()
-                {
-                    wasmInstance.exports.runCallback(f);
-                }, n);
-            }
+            webglUniformMatrix4fv: webglUniformMatrix4fv
         }
     };
     
@@ -236,7 +234,17 @@ request.onload = () => {
         wasmInstance = result.instance;
         wasmMemory = wasmInstance.exports.memory;
         const { exports } = result.instance;
-        const ret = exports.main(canvas.clientWidth, canvas.clientHeight);
+        const ret = exports.init(canvas.clientWidth, canvas.clientHeight);
+        setInterval(function()
+        {
+            wasmInstance.exports.loop(1.0 / 60.0);
+        }, 1000 / 60);
+        window.onresize = function(event)
+        {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            wasmInstance.exports.resize(canvas.width, canvas.height);
+        };
     });
 };
 

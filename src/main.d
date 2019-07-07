@@ -37,9 +37,6 @@ enum VertexAttrib
 
 extern(C) struct Application
 {
-    enum int fps = 60;
-    enum double dt = 1.0 / fps;
-
     int canvasWidth;
     int canvasHeight;
     
@@ -161,6 +158,7 @@ extern(C) struct Application
         webglEnableVertexAttribArray(VertexAttrib.Vertices);
         webglBindBuffer(GL_ARRAY_BUFFER, vbo);
         webglVertexAttribPointer(VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, 0);
+        
         /*
         //TODO:
         webglEnableVertexAttribArray(VertexAttrib.Normals);
@@ -233,26 +231,38 @@ extern(C) struct Application
         
         webglUseProgram(0);
     }
+    
+    void onResize(int cw, int ch)
+    {
+        gl.viewport(0, 0, cw, ch);
+        canvasWidth = cw;
+        canvasHeight = ch;
+        projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, 0, 100);
+        
+        auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
+        auto s = scaleMatrix(100, 100, 100);
+        modelViewMatrix = multMatrix(t, s);
+    }
 }
 
 __gshared Application app;
 
-int loop()
+int loop(double dt)
 {
-    app.onUpdate(app.dt);
+    app.onUpdate(dt);
     app.onRender();
     return 0;
 }
 
-int runCallback(int function() callback)
+int resize(int cw, int ch)
 {
-    return callback();
+    app.onResize(cw, ch);
+    return 0;
 }
 
-int main(int cw, int ch)
+int init(int cw, int ch)
 {
     app.create(cw, ch);
-    setInterval(&loop, 1000 / app.fps);
     return 0;
 }
 
