@@ -25,7 +25,6 @@
         "rollup-plugin-serve": "^1.0.1"
     },
     "scripts": {
-        "bundle": "rollup -c -w",
-        "start": "http-server html"
+        "bundle": "rollup -c -w"
     }
 }
