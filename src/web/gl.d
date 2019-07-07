@@ -1,11 +1,11 @@
-module wstd.webgl2;
+module web.gl;
 
 extern(C):
 
 // WebGL declarations
-enum WEBGL_COLOR_BUFFER_BIT = 0x00004000;
-enum WEBGL_DEPTH_BUFFER_BIT = 0x00000100;
-enum WEBGL_STENCIL_BUFFER_BIT = 0x00000400;
+enum GL_COLOR_BUFFER_BIT = 0x00004000;
+enum GL_DEPTH_BUFFER_BIT = 0x00000100;
+enum GL_STENCIL_BUFFER_BIT = 0x00000400;
 
 enum GL_FLOAT = 0x1406;
 enum GL_UNSIGNED_INT = 0x1405;
@@ -19,6 +19,8 @@ enum GL_TRIANGLES = 0x0004;
 
 enum GL_VERTEX_SHADER = 0x8B31;
 enum GL_FRAGMENT_SHADER = 0x8B30;
+
+public:
 
 void webglClearColor(float r, float g, float b, float a);
 void webglClear(uint mask);
@@ -39,3 +41,28 @@ void webglLinkProgram(uint program);
 void webglUseProgram(uint program);
 uint webglGetUniformLocation(uint program, uint length, ubyte* offset);
 void webglUniformMatrix4fv(uint location, uint transpose, ubyte* offset);
+
+public:
+
+static struct gl
+{
+    alias clearColor = webglClearColor;
+    alias clear = webglClear;
+    alias createBuffer = webglCreateBuffer;
+    alias bindBuffer = webglBindBuffer;
+    alias bufferData = webglBufferData;
+    alias createVertexArray = webglCreateVertexArray;
+    alias bindVertexArray = webglBindVertexArray;
+    alias enableVertexAttribArray = webglEnableVertexAttribArray;
+    alias vertexAttribPointer = webglVertexAttribPointer;
+    alias drawElements = webglDrawElements;
+    alias createShader = webglCreateShader;
+    alias shaderSource = webglShaderSource;
+    alias compileShader = webglCompileShader;
+    alias createProgram = webglCreateProgram;
+    alias attachShader = webglAttachShader;
+    alias linkProgram = webglLinkProgram;
+    alias useProgram = webglUseProgram;
+    alias getUniformLocation = webglGetUniformLocation;
+    alias uniformMatrix4fv = webglUniformMatrix4fv;
+}

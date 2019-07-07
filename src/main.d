@@ -1,7 +1,8 @@
 module main;
 
 import std.traits;
-import wstd;
+import core;
+import web;
 
 extern(C):
 
@@ -145,7 +146,7 @@ extern(C) struct Application
     
     void onAllocate()
     {
-        webglClearColor(0.5, 0.5, 0.5, 1.0);
+        gl.clearColor(0.5, 0.5, 0.5, 1.0);
         vbo = webglCreateBuffer();
         webglBindBuffer(GL_ARRAY_BUFFER, vbo);
         webglBufferData(GL_ARRAY_BUFFER, vertices.length , cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
@@ -213,7 +214,7 @@ extern(C) struct Application
     
     void onRender()
     {
-        webglClear(WEBGL_COLOR_BUFFER_BIT | WEBGL_DEPTH_BUFFER_BIT);
+        webglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         webglUseProgram(shaderProgram);
         
