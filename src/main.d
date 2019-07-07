@@ -1,11 +1,16 @@
 module main;
 
 import std.traits;
+import memory;
+import math;
+import js;
+import webgl2;
 
 enum psize = 8;
 __gshared ulong _allocatedMemory = 0;
 
-/*
+extern(C):
+
 T allocate(T, A...) (A args) if (is(T == class))
 {
     enum size = __traits(classInstanceSize, T);
@@ -16,55 +21,10 @@ T allocate(T, A...) (A args) if (is(T == class))
 }
 
 alias New = allocate;
-*/
 
-T abs(T)(T v)
+extern(C++) class Foo
 {
-    if (v < 0.0) return -v;
-    else return v;
-}
-
-T clamp(T)(T v, T mi, T ma)
-{
-    if (v < mi) return mi;
-    else if (v > ma) return ma;
-    else return v;
-}
-
-T rationalSmoothstep(T)(T x, float k)
-{
-    T s = (x + x * k - k * 0.5 - 0.5) / (abs(x * k * 4.0 - k * 2.0) - k + 1.0) + 0.5;
-    return clamp(s, 0.0, 1.0);
-}
-
-extern(C):
-
-double sqrt(double number)
-{
-    long i;
-    float x, y;
-    const float f = 1.5f;
-    x = number * 0.5f;
-    y = number;
-    i = *cast(long*)&y;
-    i = 0x5f3759df - (i >> 1);
-    y = *cast(float*)&i;
-    y = y * (f - (x * y * y));
-    return number * y;
-}
-
-double rsqrt(double number)
-{
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5f;
-	x2 = number * 0.5f;
-	y  = number;
-	i  = * cast(long*)&y;
-	i  = 0x5f3759df - (i >> 1);
-	y  = * cast(float*)&i;
-	y  = y * (threehalfs - (x2 * y * y));
-	return y;
+    int x;
 }
 
 double benchmark()
@@ -75,155 +35,11 @@ double benchmark()
     return r;
 }
 
-void consoleLog(double num);
-void jsSetInterval(int function() callback, int msec);
-
-uint malloc(uint size);
-void free(uint mem);
-
-// WebGL declarations
-enum WEBGL_COLOR_BUFFER_BIT = 0x00004000;
-enum WEBGL_DEPTH_BUFFER_BIT = 0x00000100;
-enum WEBGL_STENCIL_BUFFER_BIT = 0x00000400;
-
-enum GL_FLOAT = 0x1406;
-enum GL_UNSIGNED_INT = 0x1405;
-enum GL_UNSIGNED_SHORT = 0x1403;
-
-enum GL_ARRAY_BUFFER = 0x8892;
-enum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
-enum GL_STATIC_DRAW = 0x88E4;
-
-enum GL_TRIANGLES = 0x0004;
-
-enum GL_VERTEX_SHADER = 0x8B31;
-enum GL_FRAGMENT_SHADER = 0x8B30;
-
-void webglClearColor(float r, float g, float b, float a);
-void webglClear(uint mask);
-uint webglCreateBuffer();
-void webglBindBuffer(uint buffType, uint buff);
-void webglBufferData(uint target, uint len, ubyte* offset, uint usage);
-uint webglCreateVertexArray();
-void webglBindVertexArray(uint vao);
-void webglEnableVertexAttribArray(uint index);
-void webglVertexAttribPointer(uint index, uint size, uint type, uint normalized, uint stride, uint offset);
-void webglDrawElements(uint mode, uint count, uint type, uint offset);
-uint webglCreateShader(uint type);
-void webglShaderSource(uint shader, uint len, ubyte* offset);
-void webglCompileShader(uint shader);
-uint webglCreateProgram();
-void webglAttachShader(uint program, uint shader);
-void webglLinkProgram(uint program);
-void webglUseProgram(uint program);
-uint webglGetUniformLocation(uint program, uint length, ubyte* offset);
-void webglUniformMatrix4fv(uint location, uint transpose, ubyte* offset);
-
 enum VertexAttrib
 {
     Vertices = 0,
     Normals = 1,
     Texcoords = 2
-}
-
-float[16] orthoMatrix(float l, float r, float b, float t, float n, float f)
-{
-    float[16] res;
-
-    float width  = r - l;
-    float height = t - b;
-    float depth  = f - n;
-
-    res[0] =  2.0 / width;
-    res[1] =  0.0;
-    res[2] =  0.0;
-    res[3] =  0.0;
-
-    res[4] =  0.0;
-    res[5] =  2.0 / height;
-    res[6] =  0.0;
-    res[7] =  0.0;
-
-    res[8] =  0.0;
-    res[9] =  0.0;
-    res[10]= -2.0 / depth;
-    res[11]=  0.0;
-
-    res[12]= -(r + l) / width;
-    res[13]= -(t + b) / height;
-    res[14]= -(f + n) / depth;
-    res[15]=  1.0;
-
-    return res;
-}
-
-float[16] translationMatrix(float x, float y, float z)
-{
-    float[16] res;
-    
-    res[0] = 1.0;
-    res[1] = 0.0;
-    res[2] = 0.0;
-    res[3] = 0.0;
-    
-    res[4] = 0.0;
-    res[5] = 1.0;
-    res[6] = 0.0;
-    res[7] = 0.0;
-
-    res[8] = 0.0;
-    res[9] = 0.0;
-    res[10] = 1.0;
-    res[11] = 0.0;
-
-    res[12] = x;
-    res[13] = y;
-    res[14] = z;
-    res[15] = 1.0;
-
-    return res;
-}
-
-float[16] scaleMatrix(float x, float y, float z)
-{
-    float[16] res;
-    
-    res[0] = x;
-    res[1] = 0.0;
-    res[2] = 0.0;
-    res[3] = 0.0;
-    
-    res[4] = 0.0;
-    res[5] = y;
-    res[6] = 0.0;
-    res[7] = 0.0;
-
-    res[8] = 0.0;
-    res[9] = 0.0;
-    res[10] = z;
-    res[11] = 0.0;
-
-    res[12] = 0.0;
-    res[13] = 0.0;
-    res[14] = 0.0;
-    res[15] = 1.0;
-
-    return res;
-}
-
-float[16] multMatrix(ref float[16] m1, ref float[16] m2)
-{
-    float[16] res;
-    for(size_t y = 0; y < 16; y++)
-    for(size_t x = 0; x < 16; x++)
-    {
-        res[y * 4 + x] = 
-            m1[y * 4 + 0] * m2[0 * 4 + x] +
-            m1[y * 4 + 1] * m2[1 * 4 + x] +
-            m1[y * 4 + 2] * m2[2 * 4 + x] +
-            m1[y * 4 + 3] * m2[3 * 4 + x];
-    }
-    return res;
 }
 
 extern(C) struct Application
@@ -382,6 +198,10 @@ extern(C) struct Application
         auto s = scaleMatrix(100, 100, 100);
         modelViewMatrix = multMatrix(t, s);
         modelViewMatrixLoc = webglGetUniformLocation(shaderProgram, pMat2.length, cast(ubyte*)pMat2.ptr);
+        
+        Foo foo = New!Foo();
+        foo.x = 100;
+        consoleLog(foo.x);
     }
     
     void onUpdate(double dt)
@@ -424,7 +244,7 @@ int main(int cw, int ch)
     app.create(cw, ch);
     consoleLog(app.canvasWidth);
     consoleLog(app.canvasHeight);
-    jsSetInterval(&loop, 1000 / app.fps);
+    setInterval(&loop, 1000 / app.fps);
     return 0;
 }
 
