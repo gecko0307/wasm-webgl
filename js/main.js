@@ -4,8 +4,6 @@ canvas.height = canvas.clientHeight;
 
 const gl = canvas.getContext("webgl2");
 
-console.log(canvas.clientWidth, canvas.clientHeight);
-
 gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
 gl.enable(gl.DEPTH_TEST);
 gl.depthFunc(gl.LESS);
@@ -32,7 +30,6 @@ const pageSize = (64 * 1024);
 function malloc(size)
 {
     const offset = wasmMemory.grow(size / pageSize + size % pageSize);
-    //var buf = new Uint8Array(wasmMemory.buffer, offset, size);
     return offset;
 }
     
@@ -65,28 +62,28 @@ function getFloat32Array(bufferOffset, bufferLen)
     return buf;
 }
 
-function webglViewport(x, y, w, h)
+function glViewport(x, y, w, h)
 {
     gl.viewport(x, y, w, h);
 }
 
-function webglClearColor(r, g, b, a)
+function glClearColor(r, g, b, a)
 {
     gl.clearColor(r, g, b, a);
 }
     
-function webglClear(mask)
+function glClear(mask)
 {
     gl.clear(mask); 
 }
     
-function webglCreateBuffer()
+function glCreateBuffer()
 {
     buffers.push(gl.createBuffer());
     return buffers.length;
 }
     
-function webglBindBuffer(target, buff)
+function glBindBuffer(target, buff)
 {
     if (buff == 0)
         gl.bindBuffer(target, null);
@@ -94,7 +91,7 @@ function webglBindBuffer(target, buff)
         gl.bindBuffer(target, buffers[buff - 1]);
 }
     
-function webglBufferData(target, len, offset, usage)
+function glBufferData(target, len, offset, usage)
 {
     var buf;
     if (target == gl.ELEMENT_ARRAY_BUFFER)
@@ -104,13 +101,13 @@ function webglBufferData(target, len, offset, usage)
     gl.bufferData(target, buf, usage);
 }
     
-function webglCreateVertexArray()
+function glCreateVertexArray()
 {
     vaos.push(gl.createVertexArray());
     return vaos.length;
 }
     
-function webglBindVertexArray(vao)
+function glBindVertexArray(vao)
 {        
     if (vao == 0)
         gl.bindVertexArray(null);
@@ -118,57 +115,57 @@ function webglBindVertexArray(vao)
         gl.bindVertexArray(buffers[vaos - 1]);
 }
     
-function webglEnableVertexAttribArray(index)
+function glEnableVertexAttribArray(index)
 {        
     gl.enableVertexAttribArray(index);
 }
     
-function webglVertexAttribPointer(index, size, type, normalized, stride, offset)
+function glVertexAttribPointer(index, size, type, normalized, stride, offset)
 {
     gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
 }
     
-function webglDrawElements(mode, count, type, offset)
+function glDrawElements(mode, count, type, offset)
 {
     gl.drawElements(mode, count, type, offset);
 }
     
-function webglCreateShader(type)
+function glCreateShader(type)
 {
     shaders.push(gl.createShader(type));
     return shaders.length;
 }
     
-function webglShaderSource(shader, length, offset)
+function glShaderSource(shader, length, offset)
 {
     var code = getString(offset, length);
     gl.shaderSource(shaders[shader - 1], code);
 }
     
-function webglCompileShader(shader)
+function glCompileShader(shader)
 {
     gl.compileShader(shaders[shader - 1]);
     if (!gl.getShaderParameter(shaders[shader - 1], gl.COMPILE_STATUS))
         console.log(gl.getShaderInfoLog(shaders[shader - 1]));
 }
     
-function webglCreateProgram()
+function glCreateProgram()
 {        
     programs.push(gl.createProgram());
     return programs.length;
 }
     
-function webglAttachShader(program, shader)
+function glAttachShader(program, shader)
 {
     gl.attachShader(programs[program - 1], shaders[shader - 1]);
 }
     
-function webglLinkProgram(program)
+function glLinkProgram(program)
 {
     gl.linkProgram(programs[program - 1]);
 }
     
-function webglUseProgram(program)
+function glUseProgram(program)
 {
     if (program == 0)
         gl.useProgram(null);
@@ -176,7 +173,7 @@ function webglUseProgram(program)
         gl.useProgram(programs[program - 1])
 }
     
-function webglGetUniformLocation(program, length, offset)
+function glGetUniformLocation(program, length, offset)
 {
     const str = getString(offset, length);
     const loc = gl.getUniformLocation(programs[program - 1], str);
@@ -184,7 +181,7 @@ function webglGetUniformLocation(program, length, offset)
     return locations.length;
 }
     
-function webglUniformMatrix4fv(location, transpose, offset)
+function glUniformMatrix4fv(location, transpose, offset)
 {
     if (location != 0)
     {
@@ -208,26 +205,26 @@ request.onload = () => {
             malloc: malloc,
             free: free,
 
-            webglViewport: webglViewport,
-            webglClearColor: webglClearColor,
-            webglClear: webglClear,
-            webglCreateBuffer: webglCreateBuffer,
-            webglBindBuffer: webglBindBuffer,
-            webglBufferData: webglBufferData,
-            webglCreateVertexArray: webglCreateVertexArray,
-            webglBindVertexArray: webglBindVertexArray,
-            webglEnableVertexAttribArray: webglEnableVertexAttribArray,
-            webglVertexAttribPointer: webglVertexAttribPointer,
-            webglDrawElements: webglDrawElements,
-            webglCreateShader: webglCreateShader,
-            webglShaderSource: webglShaderSource,
-            webglCompileShader: webglCompileShader,
-            webglCreateProgram: webglCreateProgram,
-            webglAttachShader: webglAttachShader,
-            webglLinkProgram: webglLinkProgram,
-            webglUseProgram: webglUseProgram,
-            webglGetUniformLocation: webglGetUniformLocation,
-            webglUniformMatrix4fv: webglUniformMatrix4fv
+            glViewport: glViewport,
+            glClearColor: glClearColor,
+            glClear: glClear,
+            glCreateBuffer: glCreateBuffer,
+            glBindBuffer: glBindBuffer,
+            glBufferData: glBufferData,
+            glCreateVertexArray: glCreateVertexArray,
+            glBindVertexArray: glBindVertexArray,
+            glEnableVertexAttribArray: glEnableVertexAttribArray,
+            glVertexAttribPointer: glVertexAttribPointer,
+            glDrawElements: glDrawElements,
+            glCreateShader: glCreateShader,
+            glShaderSource: glShaderSource,
+            glCompileShader: glCompileShader,
+            glCreateProgram: glCreateProgram,
+            glAttachShader: glAttachShader,
+            glLinkProgram: glLinkProgram,
+            glUseProgram: glUseProgram,
+            glGetUniformLocation: glGetUniformLocation,
+            glUniformMatrix4fv: glUniformMatrix4fv
         }
     };
     

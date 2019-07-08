@@ -2,7 +2,6 @@ module web.gl;
 
 extern(C):
 
-// WebGL declarations
 enum GL_COLOR_BUFFER_BIT = 0x00004000;
 enum GL_DEPTH_BUFFER_BIT = 0x00000100;
 enum GL_STENCIL_BUFFER_BIT = 0x00000400;
@@ -20,51 +19,23 @@ enum GL_TRIANGLES = 0x0004;
 enum GL_VERTEX_SHADER = 0x8B31;
 enum GL_FRAGMENT_SHADER = 0x8B30;
 
-public:
-
-void webglViewport(uint x, uint y, uint w, uint h);
-void webglClearColor(float r, float g, float b, float a);
-void webglClear(uint mask);
-uint webglCreateBuffer();
-void webglBindBuffer(uint buffType, uint buff);
-void webglBufferData(uint target, uint len, ubyte* offset, uint usage);
-uint webglCreateVertexArray();
-void webglBindVertexArray(uint vao);
-void webglEnableVertexAttribArray(uint index);
-void webglVertexAttribPointer(uint index, uint size, uint type, uint normalized, uint stride, uint offset);
-void webglDrawElements(uint mode, uint count, uint type, uint offset);
-uint webglCreateShader(uint type);
-void webglShaderSource(uint shader, uint len, ubyte* offset);
-void webglCompileShader(uint shader);
-uint webglCreateProgram();
-void webglAttachShader(uint program, uint shader);
-void webglLinkProgram(uint program);
-void webglUseProgram(uint program);
-uint webglGetUniformLocation(uint program, uint length, ubyte* offset);
-void webglUniformMatrix4fv(uint location, uint transpose, ubyte* offset);
-
-public:
-
-static struct gl
-{
-    alias viewport = webglViewport;
-    alias clearColor = webglClearColor;
-    alias clear = webglClear;
-    alias createBuffer = webglCreateBuffer;
-    alias bindBuffer = webglBindBuffer;
-    alias bufferData = webglBufferData;
-    alias createVertexArray = webglCreateVertexArray;
-    alias bindVertexArray = webglBindVertexArray;
-    alias enableVertexAttribArray = webglEnableVertexAttribArray;
-    alias vertexAttribPointer = webglVertexAttribPointer;
-    alias drawElements = webglDrawElements;
-    alias createShader = webglCreateShader;
-    alias shaderSource = webglShaderSource;
-    alias compileShader = webglCompileShader;
-    alias createProgram = webglCreateProgram;
-    alias attachShader = webglAttachShader;
-    alias linkProgram = webglLinkProgram;
-    alias useProgram = webglUseProgram;
-    alias getUniformLocation = webglGetUniformLocation;
-    alias uniformMatrix4fv = webglUniformMatrix4fv;
-}
+void glViewport(uint x, uint y, uint w, uint h);
+void glClearColor(float r, float g, float b, float a);
+void glClear(uint mask);
+uint glCreateBuffer();
+void glBindBuffer(uint buffType, uint buff);
+void glBufferData(uint target, uint len, ubyte* offset, uint usage);
+uint glCreateVertexArray();
+void glBindVertexArray(uint vao);
+void glEnableVertexAttribArray(uint index);
+void glVertexAttribPointer(uint index, uint size, uint type, uint normalized, uint stride, uint offset);
+void glDrawElements(uint mode, uint count, uint type, uint offset);
+uint glCreateShader(uint type);
+void glShaderSource(uint shader, uint len, ubyte* offset);
+void glCompileShader(uint shader);
+uint glCreateProgram();
+void glAttachShader(uint program, uint shader);
+void glLinkProgram(uint program);
+void glUseProgram(uint program);
+uint glGetUniformLocation(uint program, uint length, ubyte* offset);
+void glUniformMatrix4fv(uint location, uint transpose, ubyte* offset);

@@ -6,6 +6,7 @@ import web;
 
 extern(C):
 
+/*
 extern(C++) class Foo
 {
     int x;
@@ -27,6 +28,7 @@ struct Bar
         y = v2;
     }
 }
+*/
 
 enum VertexAttrib
 {
@@ -109,24 +111,24 @@ extern(C) struct Application
     
     void onAllocate()
     {
-        gl.clearColor(0.5, 0.5, 0.5, 1.0);
-        vbo = webglCreateBuffer();
-        webglBindBuffer(GL_ARRAY_BUFFER, vbo);
-        webglBufferData(GL_ARRAY_BUFFER, vertices.length , cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
-        webglBindBuffer(GL_ARRAY_BUFFER, 0);
+        glClearColor(0.5, 0.5, 0.5, 1.0);
+        vbo = glCreateBuffer();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices.length , cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         
-        eao = webglCreateBuffer();
-        webglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eao);
-        webglBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length, cast(ubyte*)indices.ptr, GL_STATIC_DRAW);
-        webglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        eao = glCreateBuffer();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eao);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length, cast(ubyte*)indices.ptr, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         
-        vao = webglCreateVertexArray();
-        webglBindVertexArray(vao);
-        webglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eao);
+        vao = glCreateVertexArray();
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eao);
         
-        webglEnableVertexAttribArray(VertexAttrib.Vertices);
-        webglBindBuffer(GL_ARRAY_BUFFER, vbo);
-        webglVertexAttribPointer(VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(VertexAttrib.Vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glVertexAttribPointer(VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, 0);
         
         /*
         //TODO:
@@ -139,37 +141,30 @@ extern(C) struct Application
         webglVertexAttribPointer(VertexAttrib.Texcoords, 2, GL_FLOAT, false, 0, 0);
         */
         
-        webglBindVertexArray(0);
+        glBindVertexArray(0);
         
-        vs = webglCreateShader(GL_VERTEX_SHADER);
-        webglShaderSource(vs, vertexShader.length, cast(ubyte*)vertexShader.ptr);
-        webglCompileShader(vs);
+        vs = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vs, vertexShader.length, cast(ubyte*)vertexShader.ptr);
+        glCompileShader(vs);
         
-        fs = webglCreateShader(GL_FRAGMENT_SHADER);
-        webglShaderSource(fs, fragmentShader.length, cast(ubyte*)fragmentShader.ptr);
-        webglCompileShader(fs);
+        fs = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fs, fragmentShader.length, cast(ubyte*)fragmentShader.ptr);
+        glCompileShader(fs);
         
-        shaderProgram = webglCreateProgram();
+        shaderProgram = glCreateProgram();
         
-        webglAttachShader(shaderProgram, vs);
-        webglAttachShader(shaderProgram, fs);
+        glAttachShader(shaderProgram, vs);
+        glAttachShader(shaderProgram, fs);
         
-        webglLinkProgram(shaderProgram);
+        glLinkProgram(shaderProgram);
         
         projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, -1000, 1000);
-        projectionMatrixLoc = webglGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
+        projectionMatrixLoc = glGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
         
         auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
         auto s = scaleMatrix(100, 100, 100);
         modelViewMatrix = multMatrix(t, s);
-        modelViewMatrixLoc = webglGetUniformLocation(shaderProgram, pMat2.length, cast(ubyte*)pMat2.ptr);
-        
-        Bar* b = New!Bar(100, 0.5f);
-        consoleLog(b.y);
-        
-        int[] arr = New!(int[])(20);
-        arr[1] = 5;
-        consoleLog(arr[1]);
+        modelViewMatrixLoc = glGetUniformLocation(shaderProgram, pMat2.length, cast(ubyte*)pMat2.ptr);
         
         /*
         Bar* b = New!Bar(100, 0.5f);
@@ -195,23 +190,23 @@ extern(C) struct Application
     
     void onRender()
     {
-        webglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        webglUseProgram(shaderProgram);
+        glUseProgram(shaderProgram);
         
-        webglUniformMatrix4fv(projectionMatrixLoc, false, cast(ubyte*)projectionMatrix.ptr);
-        webglUniformMatrix4fv(modelViewMatrixLoc, false, cast(ubyte*)modelViewMatrix.ptr);
+        glUniformMatrix4fv(projectionMatrixLoc, false, cast(ubyte*)projectionMatrix.ptr);
+        glUniformMatrix4fv(modelViewMatrixLoc, false, cast(ubyte*)modelViewMatrix.ptr);
         
-        webglBindVertexArray(vao);
-        webglDrawElements(GL_TRIANGLES, cast(uint)indices.length, GL_UNSIGNED_SHORT, 0);
-        webglBindVertexArray(0);
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, cast(uint)indices.length, GL_UNSIGNED_SHORT, 0);
+        glBindVertexArray(0);
         
-        webglUseProgram(0);
+        glUseProgram(0);
     }
     
     void onResize(int cw, int ch)
     {
-        gl.viewport(0, 0, cw, ch);
+        glViewport(0, 0, cw, ch);
         canvasWidth = cw;
         canvasHeight = ch;
         projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, -1000, 1000);
