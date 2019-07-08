@@ -10,3 +10,5 @@ By default this project targets desktop platforms. To compile WebAssembly do the
    `dub build --config=web --build=release --compiler=ldc2`
 3. Run:
    `npm run bundle`
+
+Or you can just run the bundle in `dist` folder using your preferred web server for a quick test.
