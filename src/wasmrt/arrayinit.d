@@ -1,4 +1,4 @@
-module runtime.arrayinit;
+module wasmrt.arrayinit;
 
 extern(C):
 

@@ -1,7 +1,13 @@
 module matrix;
 
-version(WebAssembly) import runtime.math;
-else import std.math;
+version(WebAssembly) 
+{
+    import wasmrt.math;
+}
+else
+{
+    import std.math;
+}
 
 float[16] orthoMatrix(float l, float r, float b, float t, float n, float f)
 {

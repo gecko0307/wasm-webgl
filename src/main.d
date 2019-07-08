@@ -4,7 +4,7 @@ import std.traits;
 
 version(WebAssembly)
 {
-    import runtime;
+    import wasmrt;
     import web;
 }
 else 

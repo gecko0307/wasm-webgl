@@ -1,4 +1,4 @@
-module runtime.memory;
+module wasmrt.memory;
 
 import std.traits;
 

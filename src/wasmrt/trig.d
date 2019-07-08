@@ -25,9 +25,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-module runtime.trig;
+module wasmrt.trig;
 
-import runtime.math;
+import wasmrt.math;
 
 enum float invtwopi = 0.1591549f;
 enum float twopi = 6.283185f;

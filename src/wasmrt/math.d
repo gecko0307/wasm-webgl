@@ -1,6 +1,6 @@
-module runtime.math;
+module wasmrt.math;
 
-public import runtime.trig;
+public import wasmrt.trig;
 
 T abs(T)(T v)
 {
