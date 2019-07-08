@@ -1,5 +1,5 @@
 # wasm-webgl
-WebAssembly experiment with D: a cross-platform program that can be compiled both to machine code or wasm. It renders graphics using OpenGL 3.3 or WebGL 2, includes a simple js-side malloc and a basic `betterC` math library.
+WebAssembly experiment with D: a cross-platform program that can be compiled both to machine code or wasm. It renders graphics using OpenGL 3.3 or WebGL 2 and includes a tiny `betterC` runtime (`wasmrt`).
 
 [![Screenshot](screenshot.jpg)](screenshot.jpg)
 
