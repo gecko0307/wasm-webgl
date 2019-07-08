@@ -18,8 +18,7 @@ import matrix;
 enum VertexAttrib: uint
 {
     Vertices = 0,
-    Normals = 1,
-    Texcoords = 2
+    Colors = 1
 }
 
 extern(C++) class Test
@@ -49,7 +48,13 @@ struct Application
     float[] vertices = [
         0.0, -1.0, 0.0,
         -1.0, 1.0, 0.0,
-        1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0
+    ];
+    
+    float[] colors = [
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0
     ];
 
     ushort[] indices = [
@@ -65,6 +70,7 @@ struct Application
     }
     
     uint vbo;
+    uint cbo;
     uint eao;
     uint vao;
     
@@ -76,8 +82,9 @@ struct Application
     precision highp float;
     
     layout (location = 0) in vec3 va_Vertex;
+    layout (location = 1) in vec3 va_Color;
     
-    out vec3 position;
+    out vec3 color;
     
     uniform mat4 projectionMatrix;
     uniform mat4 modelViewMatrix;
@@ -85,7 +92,7 @@ struct Application
     void main(void)
     {
         vec4 pos = projectionMatrix * modelViewMatrix * vec4(va_Vertex, 1.0);
-        position = va_Vertex * 0.5 + 0.5;
+        color = va_Color;
         gl_Position = pos;
     }
     ";
@@ -94,13 +101,13 @@ struct Application
     "#version 300 es
     precision highp float;
     
-    in vec3 position;
+    in vec3 color;
     
     out vec4 frag_color;
     
     void main(void)
     {
-        frag_color = vec4(position, 1.0);
+        frag_color = vec4(color, 1.0);
     }";
     
     uint shaderProgram;
@@ -143,6 +150,25 @@ struct Application
         
         version(WebAssembly)
         {
+            cbo = glCreateBuffer();
+        }
+        else
+        {
+            glGenBuffers(1, &cbo);
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, cbo);
+        version(WebAssembly)
+        {
+            glBufferData(GL_ARRAY_BUFFER, colors.length, cast(ubyte*)colors.ptr, GL_STATIC_DRAW);
+        }
+        else
+        {
+            glBufferData(GL_ARRAY_BUFFER, colors.length * float.sizeof * 3, cast(ubyte*)colors.ptr, GL_STATIC_DRAW);
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+        version(WebAssembly)
+        {
             eao = glCreateBuffer();
         }
         else
@@ -180,6 +206,17 @@ struct Application
         else
         {
             glVertexAttribPointer(cast(uint)VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, null);
+        }
+        
+        glEnableVertexAttribArray(cast(uint)VertexAttrib.Colors);
+        glBindBuffer(GL_ARRAY_BUFFER, cbo);
+        version(WebAssembly)
+        {
+            glVertexAttribPointer(cast(uint)VertexAttrib.Colors, 3, GL_FLOAT, false, 0, 0);
+        }
+        else
+        {
+            glVertexAttribPointer(cast(uint)VertexAttrib.Colors, 3, GL_FLOAT, false, 0, null);
         }
         
         glBindVertexArray(0);
