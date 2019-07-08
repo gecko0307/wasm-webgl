@@ -1,4 +1,4 @@
-module core.arrayinit;
+module runtime.arrayinit;
 
 extern(C):
 

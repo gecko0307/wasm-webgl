@@ -1,6 +1,6 @@
-module core.math;
+module runtime.math;
 
-public import core.trig;
+public import runtime.trig;
 
 T abs(T)(T v)
 {

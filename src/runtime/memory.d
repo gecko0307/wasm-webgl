@@ -1,4 +1,4 @@
-module core.memory;
+module runtime.memory;
 
 import std.traits;
 
