@@ -55,6 +55,24 @@ T allocate(T) (size_t length) if (isArray!T)
     return arr;
 }
 
-alias New = allocate;
+void deallocate(T)(ref T obj) if (isArray!T)
+{
+    void* p = cast(void*)obj.ptr;
+    free(cast(uint)p);
+}
 
-// TODO: Delete
+void deallocate(T)(T obj) if (is(T == class) || is(T == interface))
+{
+    Object o = cast(Object)obj;
+    void* p = cast(void*)o;
+    free(cast(uint)p);
+}
+
+void deallocate(T)(T* obj)
+{
+    void* p = cast(void*)obj;
+    free(cast(uint)p);
+}
+
+alias New = allocate;
+alias Delete = deallocate;

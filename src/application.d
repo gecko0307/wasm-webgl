@@ -10,6 +10,7 @@ else
     version = Desktop;
     import std.string;
     import bindbc.opengl;
+    import dlib.core.memory;
 }
 
 import matrix;
@@ -19,6 +20,25 @@ enum VertexAttrib: uint
     Vertices = 0,
     Normals = 1,
     Texcoords = 2
+}
+
+extern(C++) class Test
+{
+    int x;
+    
+    this(int x)
+    {
+        this.x = x;
+        foo();
+    }
+    
+    ~this()
+    {
+    }
+    
+    final void foo()
+    {
+    }
 }
 
 struct Application
@@ -218,6 +238,11 @@ struct Application
         {
             modelViewMatrixLoc = glGetUniformLocation(shaderProgram, toStringz(pMat2));
         }
+        
+        Test test = New!Test(10);
+        version(WebAssembly)
+            consoleLog(test.x);
+        Delete(test);
     }
     
     float time = 0.0f;

@@ -14,7 +14,8 @@
             
             "dependencies": {
                 "bindbc-opengl": "~>0.8.0",
-                "bindbc-sdl": "~>0.8.0"
+                "bindbc-sdl": "~>0.8.0",
+                "dlib": "0.16.0"
             },
                 
             "subConfigurations": {
