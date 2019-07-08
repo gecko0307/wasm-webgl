@@ -40,6 +40,25 @@ extern(C++) class Test
     }
 }
 
+version(Desktop)
+{
+    // WebGL-style functions
+    
+    GLuint glCreateBuffer()
+    {
+        GLuint buffer;
+        glGenBuffers(1, &buffer);
+        return buffer;
+    }
+    
+    GLuint glCreateVertexArray()
+    {
+        GLuint arr;
+        glGenVertexArrays(1, &arr);
+        return arr;
+    }
+}
+
 struct Application
 {
     int canvasWidth;
@@ -129,95 +148,37 @@ struct Application
         glDepthFunc(GL_LESS);
         glDisable(GL_CULL_FACE);
         
-        version(WebAssembly)
-        {
-            vbo = glCreateBuffer();
-        }
-        else
-        {
-            glGenBuffers(1, &vbo);
-        }
+        vbo = glCreateBuffer();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        version(WebAssembly)
-        {
-            glBufferData(GL_ARRAY_BUFFER, vertices.length, cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
-        }
-        else
-        {
-            glBufferData(GL_ARRAY_BUFFER, vertices.length * float.sizeof * 3, cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
-        }
+        version(WebAssembly) glBufferData(GL_ARRAY_BUFFER, vertices.length, cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
+        else glBufferData(GL_ARRAY_BUFFER, vertices.length * float.sizeof, cast(ubyte*)vertices.ptr, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         
-        version(WebAssembly)
-        {
-            cbo = glCreateBuffer();
-        }
-        else
-        {
-            glGenBuffers(1, &cbo);
-        }
+        cbo = glCreateBuffer();
         glBindBuffer(GL_ARRAY_BUFFER, cbo);
-        version(WebAssembly)
-        {
-            glBufferData(GL_ARRAY_BUFFER, colors.length, cast(ubyte*)colors.ptr, GL_STATIC_DRAW);
-        }
-        else
-        {
-            glBufferData(GL_ARRAY_BUFFER, colors.length * float.sizeof * 3, cast(ubyte*)colors.ptr, GL_STATIC_DRAW);
-        }
+        version(WebAssembly) glBufferData(GL_ARRAY_BUFFER, colors.length, cast(ubyte*)colors.ptr, GL_STATIC_DRAW);
+        else glBufferData(GL_ARRAY_BUFFER, colors.length * float.sizeof, cast(ubyte*)colors.ptr, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         
-        version(WebAssembly)
-        {
-            eao = glCreateBuffer();
-        }
-        else
-        {
-            glGenBuffers(1, &eao);
-        }
+        eao = glCreateBuffer();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eao);
-        version(WebAssembly)
-        {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length, cast(ubyte*)indices.ptr, GL_STATIC_DRAW);
-        }
-        else
-        {
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * ushort.sizeof * 3, cast(ubyte*)indices.ptr, GL_STATIC_DRAW);
-        }
+        version(WebAssembly) glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length, cast(ubyte*)indices.ptr, GL_STATIC_DRAW);
+        else glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.length * ushort.sizeof, cast(ubyte*)indices.ptr, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         
-        version(WebAssembly)
-        {
-            vao = glCreateVertexArray();
-        }
-        else
-        {
-            glGenVertexArrays(1, &vao);
-        }
+        vao = glCreateVertexArray();
         glBindVertexArray(vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eao);
         
         glEnableVertexAttribArray(cast(uint)VertexAttrib.Vertices);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        version(WebAssembly)
-        {
-            glVertexAttribPointer(cast(uint)VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, 0);
-        }
-        else
-        {
-            glVertexAttribPointer(cast(uint)VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, null);
-        }
+        version(WebAssembly) glVertexAttribPointer(cast(uint)VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, 0);
+        else glVertexAttribPointer(cast(uint)VertexAttrib.Vertices, 3, GL_FLOAT, false, 0, null);
         
         glEnableVertexAttribArray(cast(uint)VertexAttrib.Colors);
         glBindBuffer(GL_ARRAY_BUFFER, cbo);
-        version(WebAssembly)
-        {
-            glVertexAttribPointer(cast(uint)VertexAttrib.Colors, 3, GL_FLOAT, false, 0, 0);
-        }
-        else
-        {
-            glVertexAttribPointer(cast(uint)VertexAttrib.Colors, 3, GL_FLOAT, false, 0, null);
-        }
+        version(WebAssembly) glVertexAttribPointer(cast(uint)VertexAttrib.Colors, 3, GL_FLOAT, false, 0, 0);
+        else glVertexAttribPointer(cast(uint)VertexAttrib.Colors, 3, GL_FLOAT, false, 0, null);
         
         glBindVertexArray(0);
         
@@ -255,26 +216,14 @@ struct Application
         glLinkProgram(shaderProgram);
         
         projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, -1000, 1000);
-        version(WebAssembly)
-        {
-            projectionMatrixLoc = glGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
-        }
-        else
-        {
-            projectionMatrixLoc = glGetUniformLocation(shaderProgram, toStringz(pMat1));
-        }
+        version(WebAssembly) projectionMatrixLoc = glGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
+        else projectionMatrixLoc = glGetUniformLocation(shaderProgram, toStringz(pMat1));
         
         auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
         auto s = scaleMatrix(100, 100, 100);
         modelViewMatrix = multMatrix(t, s);
-        version(WebAssembly)
-        {
-            modelViewMatrixLoc = glGetUniformLocation(shaderProgram, pMat2.length, cast(ubyte*)pMat2.ptr);
-        }
-        else
-        {
-            modelViewMatrixLoc = glGetUniformLocation(shaderProgram, toStringz(pMat2));
-        }
+        version(WebAssembly) modelViewMatrixLoc = glGetUniformLocation(shaderProgram, pMat2.length, cast(ubyte*)pMat2.ptr);
+        else modelViewMatrixLoc = glGetUniformLocation(shaderProgram, toStringz(pMat2));
         
         Test test = New!Test(10);
         version(WebAssembly)
@@ -312,14 +261,8 @@ struct Application
         }
         
         glBindVertexArray(vao);
-        version(WebAssembly)
-        {
-            glDrawElements(GL_TRIANGLES, cast(uint)indices.length, GL_UNSIGNED_SHORT, 0);
-        }
-        else
-        {
-            glDrawElements(GL_TRIANGLES, cast(uint)indices.length, GL_UNSIGNED_SHORT, null);
-        }
+        version(WebAssembly) glDrawElements(GL_TRIANGLES, cast(uint)indices.length, GL_UNSIGNED_SHORT, 0);
+        else glDrawElements(GL_TRIANGLES, cast(uint)indices.length, GL_UNSIGNED_SHORT, null);
         glBindVertexArray(0);
         
         glUseProgram(0);
