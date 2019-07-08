@@ -6,5 +6,5 @@ public
     import core.math;
     import core.trig;
     import core.matrix;
-    import core.mem;
+    import core.memory;
 }

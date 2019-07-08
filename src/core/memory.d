@@ -1,4 +1,4 @@
-module core.mem;
+module core.memory;
 
 import std.traits;
 
