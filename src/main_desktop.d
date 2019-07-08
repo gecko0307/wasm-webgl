@@ -89,15 +89,10 @@ auto initSDL(uint width, uint height)
 void main()
 {
     Application app;
-    auto window = initSDL(800, 600);
-    
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClearDepth(1.0);
-    glDepthFunc(GL_LESS);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    
-    app.create(800, 600);
+    uint w = 800;
+    uint h = 600;
+    auto window = initSDL(w, h);
+    app.create(w, h);
     
     bool running = true;
     while(running)

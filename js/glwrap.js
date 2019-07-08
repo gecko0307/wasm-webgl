@@ -5,9 +5,6 @@ export function glInit(mem, canvas)
 {
     wasmMemory = mem;
     gl = canvas.getContext("webgl2");
-    gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LESS);
     return gl;
 }
 
@@ -46,6 +43,21 @@ const shaders = [];
 const programs = [];
 const locations = [];
 
+function glEnable(v)
+{
+    gl.enable(v);
+}
+
+function glDisable(v)
+{
+    gl.disable(v);
+}
+
+function glDepthFunc(f)
+{
+    gl.depthFunc(f);
+}
+
 function glViewport(x, y, w, h)
 {
     gl.viewport(x, y, w, h);
@@ -54,6 +66,11 @@ function glViewport(x, y, w, h)
 function glClearColor(r, g, b, a)
 {
     gl.clearColor(r, g, b, a);
+}
+
+function glClearDepth(d)
+{
+    gl.clearDepth(d);
 }
     
 function glClear(mask)
@@ -177,8 +194,12 @@ function glUniformMatrix4fv(location, transpose, offset)
 export function glSymbols()
 {
     return {
+        glEnable: glEnable,
+        glDisable: glDisable,
+        glDepthFunc: glDepthFunc,
         glViewport: glViewport,
         glClearColor: glClearColor,
+        glClearDepth: glClearDepth,
         glClear: glClear,
         glCreateBuffer: glCreateBuffer,
         glBindBuffer: glBindBuffer,

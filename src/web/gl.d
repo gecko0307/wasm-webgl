@@ -2,6 +2,13 @@ module web.gl;
 
 extern(C):
 
+alias GLenum = uint;
+
+enum GL_DEPTH_TEST = 0x0B71;
+enum GL_CULL_FACE = 0x0B44;
+
+enum GL_LESS = 0x0201;
+
 enum GL_COLOR_BUFFER_BIT = 0x00004000;
 enum GL_DEPTH_BUFFER_BIT = 0x00000100;
 enum GL_STENCIL_BUFFER_BIT = 0x00000400;
@@ -19,8 +26,12 @@ enum GL_TRIANGLES = 0x0004;
 enum GL_VERTEX_SHADER = 0x8B31;
 enum GL_FRAGMENT_SHADER = 0x8B30;
 
+void glEnable(GLenum cap);
+void glDisable(GLenum cap);
+void glDepthFunc(GLenum func);
 void glViewport(uint x, uint y, uint w, uint h);
 void glClearColor(float r, float g, float b, float a);
+void glClearDepth(float d);
 void glClear(uint mask);
 uint glCreateBuffer();
 void glBindBuffer(uint buffType, uint buff);

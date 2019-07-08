@@ -96,8 +96,12 @@ struct Application
     void onAllocate()
     {
         glViewport(0, 0, canvasWidth, canvasHeight);
-        
         glClearColor(0.5, 0.5, 0.5, 1.0);
+        glClearDepth(1.0);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glDisable(GL_CULL_FACE);
+        
         version(WebAssembly)
         {
             vbo = glCreateBuffer();
