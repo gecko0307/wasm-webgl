@@ -1,5 +1,5 @@
 # wasm-webgl
-A cross-platform D application that can be compiled both to machine code or wasm. It renders graphics using OpenGL 3.3 or WebGL 2 and includes a tiny `betterC` runtime (`wasmrt`).
+A cross-platform D application that can be compiled both to machine code or wasm. It renders graphics using OpenGL 3.3 or WebGL 2 and includes a tiny `betterC` runtime.
 
 **Warning: highly experimental!**
 
