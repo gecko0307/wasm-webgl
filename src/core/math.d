@@ -1,9 +1,10 @@
 module core.math;
 
+public import core.trig;
+
 T abs(T)(T v)
 {
-    if (v < 0.0) return -v;
-    else return v;
+    return (v > 0.0)? v : -v;
 }
 
 T clamp(T)(T v, T mi, T ma)
@@ -13,13 +14,17 @@ T clamp(T)(T v, T mi, T ma)
     else return v;
 }
 
+T floor(T)(T x)
+{
+    long xi = cast(long)x;
+    return x < xi ? xi - 1 : xi;
+}
+
 T rationalSmoothstep(T)(T x, float k)
 {
     T s = (x + x * k - k * 0.5 - 0.5) / (abs(x * k * 4.0 - k * 2.0) - k + 1.0) + 0.5;
     return clamp(s, 0.0, 1.0);
 }
-
-extern(C):
 
 double sqrt(double number)
 {

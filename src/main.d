@@ -41,44 +41,13 @@ extern(C) struct Application
     int canvasHeight;
     
     float[] vertices = [
-        -1.0, -1.0,  1.0,
-        1.0, -1.0,  1.0,
-        1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
-        
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0, -1.0,
-        1.0,  1.0, -1.0,
-        1.0, -1.0, -1.0,
-
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-        1.0,  1.0,  1.0,
-        1.0,  1.0, -1.0,
-
-        -1.0, -1.0, -1.0,
-        1.0, -1.0, -1.0,
-        1.0, -1.0,  1.0,
-        -1.0, -1.0,  1.0,
-
-        1.0, -1.0, -1.0,
-        1.0,  1.0, -1.0,
-        1.0,  1.0,  1.0,
-        1.0, -1.0,  1.0,
-
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0,  1.0,
-        -1.0,  1.0,  1.0,
-        -1.0,  1.0, -1.0
+        0.0, -1.0, 0.0,
+        -1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
     ];
 
     ushort[] indices = [
-        0,  1,  2,      0,  2,  3,    // front
-        4,  5,  6,      4,  6,  7,    // back
-        8,  9,  10,     8,  10, 11,   // top
-        12, 13, 14,     12, 14, 15,   // bottom
-        16, 17, 18,     16, 18, 19,   // right
-        20, 21, 22,     20, 22, 23    // left
+        0,  1,  2
     ];
     
     void create(int w, int h)
@@ -110,7 +79,7 @@ extern(C) struct Application
     void main(void)
     {
         vec4 pos = projectionMatrix * modelViewMatrix * vec4(va_Vertex, 1.0);
-        position = pos.xyz;
+        position = va_Vertex * 0.5 + 0.5;
         gl_Position = pos;
     }
     ";
@@ -125,7 +94,7 @@ extern(C) struct Application
     
     void main(void)
     {
-        frag_color = vec4(1.0, 1.0, 0.0, 1.0);
+        frag_color = vec4(position, 1.0);
     }";
     
     uint shaderProgram;
@@ -187,7 +156,7 @@ extern(C) struct Application
         
         webglLinkProgram(shaderProgram);
         
-        projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, 0, 100);
+        projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, -1000, 1000);
         projectionMatrixLoc = webglGetUniformLocation(shaderProgram, pMat1.length, cast(ubyte*)pMat1.ptr);
         
         auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
@@ -212,8 +181,16 @@ extern(C) struct Application
         */
     }
     
+    float time = 0.0f;
+    
     void onUpdate(double dt)
     {
+        time += dt;
+        auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
+        auto r = rotationMatrix(1, time);
+        auto s = scaleMatrix(200, 200, 200);
+        auto tmp = multMatrix(t, r);
+        modelViewMatrix = multMatrix(tmp, s);
     }
     
     void onRender()
@@ -237,11 +214,7 @@ extern(C) struct Application
         gl.viewport(0, 0, cw, ch);
         canvasWidth = cw;
         canvasHeight = ch;
-        projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, 0, 100);
-        
-        auto t = translationMatrix(canvasWidth * 0.5, canvasHeight * 0.5, 0);
-        auto s = scaleMatrix(100, 100, 100);
-        modelViewMatrix = multMatrix(t, s);
+        projectionMatrix = orthoMatrix(0, canvasWidth, canvasHeight, 0, -1000, 1000);
     }
 }
 

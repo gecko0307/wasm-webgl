@@ -7,6 +7,8 @@ const gl = canvas.getContext("webgl2");
 console.log(canvas.clientWidth, canvas.clientHeight);
 
 gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
+gl.enable(gl.DEPTH_TEST);
+gl.depthFunc(gl.LESS);
     
 var wasmInstance;
 var wasmMemory;
