@@ -1,8 +1,8 @@
-var canvas = document.getElementById("canv-main");
+const canvas = document.getElementById("canv-main");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
-var gl = canvas.getContext("webgl2");
+const gl = canvas.getContext("webgl2");
 
 console.log(canvas.clientWidth, canvas.clientHeight);
 
@@ -11,26 +11,26 @@ gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
 var wasmInstance;
 var wasmMemory;
     
-var stringCache = {
+const stringCache = {
 };
     
-var arrayCache = {
+const arrayCache = {
 };
     
-var heap = [];
-var buffers = [];
-var vaos = [];
+const heap = [];
+const buffers = [];
+const vaos = [];
     
-var shaders = [];
-var programs = [];
-var locations = [];
+const shaders = [];
+const programs = [];
+const locations = [];
     
-var pageSize = (64 * 1024);
+const pageSize = (64 * 1024);
     
 function malloc(size)
 {
-    var offset = wasmMemory.grow(size / pageSize + size % pageSize);
-    var buf = new Uint8Array(wasmMemory.buffer, offset, size);
+    const offset = wasmMemory.grow(size / pageSize + size % pageSize);
+    //var buf = new Uint8Array(wasmMemory.buffer, offset, size);
     return offset;
 }
     
@@ -44,7 +44,7 @@ function getString(bufferOffset, bufferLen)
     if (bufferOffset in stringCache)
         return stringCache[bufferOffset];
 
-    var buf = new Uint8Array(wasmMemory.buffer, bufferOffset, bufferLen);
+    const buf = new Uint8Array(wasmMemory.buffer, bufferOffset, bufferLen);
     var s = "";
     for (var i = 0; i < bufferLen; i++) {
         s += String.fromCharCode(buf[i]);
@@ -58,7 +58,7 @@ function getFloat32Array(bufferOffset, bufferLen)
     if (bufferOffset in arrayCache)
         return arrayCache[bufferOffset];
 
-    var buf = new Float32Array(wasmMemory.buffer, bufferOffset, bufferLen);
+    const buf = new Float32Array(wasmMemory.buffer, bufferOffset, bufferLen);
     arrayCache[bufferOffset] = buf;
     return buf;
 }
@@ -176,8 +176,8 @@ function webglUseProgram(program)
     
 function webglGetUniformLocation(program, length, offset)
 {
-    var str = getString(offset, length);
-    var loc = gl.getUniformLocation(programs[program - 1], str);
+    const str = getString(offset, length);
+    const loc = gl.getUniformLocation(programs[program - 1], str);
     locations.push(loc);
     return locations.length;
 }
@@ -186,7 +186,7 @@ function webglUniformMatrix4fv(location, transpose, offset)
 {
     if (location != 0)
     {
-        var data = getFloat32Array(offset, 16);
+        const data = getFloat32Array(offset, 16);
         gl.uniformMatrix4fv(locations[location - 1], transpose, data);
     }
 }
@@ -235,10 +235,12 @@ request.onload = () => {
         wasmMemory = wasmInstance.exports.memory;
         const { exports } = result.instance;
         const ret = exports.init(canvas.clientWidth, canvas.clientHeight);
+        
         setInterval(function()
         {
             wasmInstance.exports.loop(1.0 / 60.0);
         }, 1000 / 60);
+        
         window.onresize = function(event)
         {
             canvas.width = canvas.clientWidth;
