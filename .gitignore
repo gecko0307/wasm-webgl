@@ -1,3 +1,4 @@
+# Object files and libraries
 *.o
 *.a
 *.lib
@@ -16,3 +17,8 @@ tests
 # Node files
 node_modules
 package-lock.json
+*.map
+
+# Binaries
+*.exe
+SDL2.dll
