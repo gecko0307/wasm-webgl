@@ -1,8 +1,8 @@
 {
     "name": "wasm-webgl",
-    "version": "1.0.0",
-    "description": "",
-    "author": "",
+    "version": "0.0.1",
+    "description": "WebAssembly + WebGL with D",
+    "author": "Timur Gafarov",
     "license": "Boost",
     "keywords": [],
     "repository": {
