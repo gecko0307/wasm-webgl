@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "description": "WebAssembly + WebGL with D",
     "author": "Timur Gafarov",
-    "license": "Boost",
+    "license": "BSL-1.0",
     "keywords": [],
     "repository": {
         "type": "git",
