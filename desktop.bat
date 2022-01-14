@@ -1,1 +1,1 @@
-dub build --config=desktop --build=release --compiler=ldc2 --verbose --arch=x86_64
+dub build --config=desktop --build=release --compiler=ldc2 --arch=x86_64

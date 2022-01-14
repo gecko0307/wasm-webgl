@@ -9,7 +9,7 @@ A cross-platform D application that can be compiled both to machine code or wasm
 By default this project targets desktop platforms. To compile WebAssembly do the following:
 1. Install latest LDC, Node.js, Rollup
 2. Build wasm module:
-   `dub build --config=web --build=release --compiler=ldc2`
+   `dub build --config=web --build=release --compiler=ldc2 --build-mode=allAtOnce`
 3. Run:
    `npm run bundle`
 

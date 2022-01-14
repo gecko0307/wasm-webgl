@@ -1,12 +1,11 @@
 {
     "name": "main",
     "description": "WebAssembly + WebGL with D",
-	"license": "Boost",
-	"authors": [
-		"Timur Gafarov"
-	],
-	"copyright": "Copyright (C) 2019 Timur Gafarov",
-    
+    "license": "Boost",
+    "authors": [
+        "Timur Gafarov"
+    ],
+    "copyright": "Copyright (c) 2019-2022 Timur Gafarov",
     "configurations": [
         {
             "name": "desktop",
@@ -15,7 +14,7 @@
             "dependencies": {
                 "bindbc-opengl": "~>0.8.0",
                 "bindbc-sdl": "~>0.8.0",
-                "dlib": "0.16.0"
+                "dlib": "1.0.0-beta1"
             },
                 
             "subConfigurations": {

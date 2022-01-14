@@ -1,1 +1,1 @@
-dub build --config=web --build=release --compiler=ldc2 --verbose --force
+dub build --config=web --build=release --compiler=ldc2 --build-mode=allAtOnce --force
